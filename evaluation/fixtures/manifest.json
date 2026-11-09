@@ -1,0 +1,136 @@
+{
+  "schema_version": "1",
+  "dataset_version": "synthetic-v1",
+  "protocol_version": "evaluation-v1",
+  "prompt_revision": "coach-v1",
+  "synthetic": true,
+  "authors": {
+    "synthetic-author": [
+      "Example Coach"
+    ]
+  },
+  "cases": [
+    {
+      "id": "synthetic-train",
+      "author_id": "synthetic-author",
+      "split": "train",
+      "split_group": "synthetic-video-1",
+      "verified": true,
+      "position": {
+        "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "prefix_uci": [
+          "e2e4",
+          "e7e5"
+        ]
+      },
+      "context_before": "Opening after 1.e4 e5.",
+      "thought": "Develop a knight toward the centre.",
+      "exclusion_reason": "",
+      "labels": {
+        "explanation": "TRAIN: central development.",
+        "continuation_uci": [
+          "g1f3"
+        ],
+        "candidates_uci": [
+          "g1f3",
+          "b1c3"
+        ],
+        "author_words": "Synthetic words; no real author.",
+        "analyst_annotation": "Correct move, check the stated reason.",
+        "claim_type": "development",
+        "expected_assessment": "reasonable",
+        "timing": {
+          "seconds": 12,
+          "ambiguous": false
+        },
+        "unresolved": false
+      }
+    },
+    {
+      "id": "synthetic-holdout",
+      "author_id": "synthetic-author",
+      "split": "holdout",
+      "split_group": "synthetic-video-2",
+      "verified": true,
+      "position": {
+        "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "prefix_uci": [
+          "e2e4",
+          "e7e5"
+        ]
+      },
+      "context_before": "Opening after 1.e4 e5.",
+      "thought": "Develop a knight toward the centre.",
+      "exclusion_reason": "",
+      "labels": {
+        "explanation": "HIDDEN: compare Nf3 and Nc3.",
+        "continuation_uci": [
+          "g1f3"
+        ],
+        "candidates_uci": [
+          "g1f3",
+          "b1c3"
+        ],
+        "author_words": "Synthetic words; no real author.",
+        "analyst_annotation": "Correct move, check the stated reason.",
+        "claim_type": "development",
+        "expected_assessment": "reasonable",
+        "timing": {
+          "seconds": 12,
+          "ambiguous": false
+        },
+        "unresolved": false
+      }
+    },
+    {
+      "id": "synthetic-excluded",
+      "author_id": "synthetic-author",
+      "split": "holdout",
+      "split_group": "synthetic-video-3",
+      "verified": true,
+      "position": {
+        "root_fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "prefix_uci": [
+          "e2e4",
+          "e7e5"
+        ]
+      },
+      "context_before": "Opening after 1.e4 e5.",
+      "thought": "Develop a knight toward the centre.",
+      "exclusion_reason": "Synthetic unreadable audio example",
+      "labels": {
+        "explanation": "HIDDEN: compare Nf3 and Nc3.",
+        "continuation_uci": [
+          "g1f3"
+        ],
+        "candidates_uci": [
+          "g1f3",
+          "b1c3"
+        ],
+        "author_words": "Synthetic words; no real author.",
+        "analyst_annotation": "Correct move, check the stated reason.",
+        "claim_type": "development",
+        "expected_assessment": "reasonable",
+        "timing": {
+          "seconds": 12,
+          "ambiguous": false
+        },
+        "unresolved": false
+      }
+    }
+  ],
+  "profiles": {
+    "synthetic-author": {
+      "text": "Develop pieces with attention to the centre.",
+      "verified": true,
+      "evidence_ids": [
+        "synthetic-train"
+      ]
+    }
+  },
+  "workload_units": {
+    "source_video_hour": 0,
+    "verified_episode": 1,
+    "game": 0
+  }
+}
