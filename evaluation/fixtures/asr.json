@@ -1,0 +1,12 @@
+[
+  {
+    "id": "synthetic-asr-1",
+    "reference": "не брать коня e4",
+    "hypothesis": "брать слона e5",
+    "square_errors": 1,
+    "piece_errors": 1,
+    "negation_errors": 1,
+    "known_semantic_distortion_after_review": false,
+    "exclusion_reason": ""
+  }
+]

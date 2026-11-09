@@ -1,0 +1,21 @@
+{
+  "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2": {
+    "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+    "budget": {
+      "multipv": 3,
+      "seconds": 1,
+      "threads": 2,
+      "hash_mb": 512
+    },
+    "source": "synthetic manual record; not measured Stockfish output",
+    "depth": 0,
+    "nodes": 0,
+    "time_seconds": 0,
+    "lines": [
+      [
+        "g1f3",
+        "b8c6"
+      ]
+    ]
+  }
+}
