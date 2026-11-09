@@ -112,17 +112,40 @@ def test_retry_charges_attempts_and_preserves_success(inputs):
     assert result['costs']['uncertain_cost_upper_bound'] == '1'
 
 
-@pytest.mark.parametrize('failure', ['usage', 'overrun', 'nan', 'empty'])
+@pytest.mark.parametrize('failure', ['usage', 'nan', 'empty'])
 def test_post_call_failure_is_uncertain_and_stops(inputs, failure):
     reply = inputs['responses'][0]
     if failure == 'usage': reply['usage'].pop('frames')
-    if failure == 'overrun': reply['usage']['input_tokens'] = 100000
     if failure == 'nan': reply['latency_seconds'] = float('nan')
     if failure == 'empty': reply['text'] = ''
     result = execute(inputs)
     assert result['status'] == 'provider_stopped'
     assert result['costs']['uncertain_cost_upper_bound'] == '1'
     assert result['completed_answers'] == 0
+
+
+@pytest.mark.parametrize('tokens,cost,budget_exceeded', [(100000, '100.008', True), (1500, '1.508', False)])
+def test_valid_usage_exceeding_bound_retains_actual_cost_and_stops(inputs, tokens, cost, budget_exceeded):
+    inputs['responses'][0]['usage']['input_tokens'] = tokens
+    inputs['config']['retries'] = 3
+    result = execute(inputs)
+    costs = result['costs']
+    assert result['status'] == 'bound_violated'
+    assert result['completed_answers'] == 0
+    assert costs['known_cost'] == costs['reserved_or_spent'] == cost
+    assert costs['uncertain_cost_upper_bound'] == '0'
+    assert costs['usage']['input_tokens'] == str(tokens)
+    assert costs['bound_exceeded'] is True
+    assert costs['budget_exceeded'] is budget_exceeded
+    assert len(costs['attempts']) == 1  # No retry or later variant after a disproved bound.
+    entry = costs['attempts'][0]
+    assert entry['status'] == 'known'
+    assert entry['usage'] == inputs['responses'][0]['usage']
+    assert entry['cost'] == cost
+    assert entry['reserved_bound'] == '1'
+    assert entry['bound_exceeded'] is True
+    assert entry['budget_exceeded'] is budget_exceeded
+    assert entry['uncertain_upper_bound'] == '0'
 
 
 def test_live_adapter_requires_approved_budget_before_calls(inputs):

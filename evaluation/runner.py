@@ -51,13 +51,16 @@ def run(dataset, config, provider, engine):
                 reply = provider.respond(request)
                 require(isinstance(reply.text, str) and bool(reply.text.strip()), 'empty response')
                 require(number(reply.latency_seconds), 'invalid latency')
-                ledger.record(key, bound, reply.usage)
+                entry = ledger.record(key, bound, reply.usage)
             except Exception as exc:
                 # Even malformed usage / post-call validation can hide billable costs.
                 ledger.record(key, bound, error=f'{type(exc).__name__}: outcome may be billed')
                 if isinstance(exc, TimeoutError) and attempt < config.get('retries', 0):
                     continue
                 result['status'] = 'provider_stopped'
+                break
+            if entry['bound_exceeded']:
+                result['status'] = 'bound_violated'
                 break
             result['responses'].append({'case_id': case['id'], 'variant': variant,
                                         'text': reply.text, 'latency_seconds': reply.latency_seconds,

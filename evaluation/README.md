@@ -104,8 +104,12 @@ limit. Successful usage releases the unused reservation. Timeout, malformed usag
 invalid answer or adapter failure retains the full uncertain reservation and records
 the reason. Missing units never silently count as zero. The next attempt stops when
 known spend plus uncertain reservations plus its bound would exceed the limit.
-The bound must be a genuine upper bound enforced by any future live adapter; an
-adapter that violates it stops with an uncertain cost and needs reconciliation.
+The bound must be a genuine upper bound enforced by any future live adapter. If
+valid reported usage exceeds the reservation, the ledger preserves all usage and
+actual cost as known, replaces the reservation with that actual cost, and records
+`bound_exceeded` plus `budget_exceeded` when applicable. The runner stops immediately
+with `bound_violated`, without retries or later variants. The disproved reservation
+is retained only as `reserved_bound`; it is never reported as an uncertainty bound.
 
 Reports include known costs, uncertain upper bounds, per-category costs, unit totals,
 per-answer/per-verified-episode/per-game/per-source-video-hour denominators and unit

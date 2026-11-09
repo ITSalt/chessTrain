@@ -35,3 +35,20 @@ indirect blind clues and real-corpus statistical coverage need human verificatio
 All fixture data/prices/latencies are synthetic. No measured author experiment or
 H1–H5 product success is claimed. Exact commit, test result and CI evidence are in
 the PR body to avoid a self-referential commit hash in this tracked report.
+
+## Review revision 1
+
+Addressed the P2 finding on reviewed head
+45d66773530226962b4d15dc2fa264b801eb2bb8: valid usage above a reservation is now
+retained as known expenditure, including all usage counters and actual unit costs.
+The original reservation is recorded as reserved_bound, with explicit bound_exceeded
+and budget_exceeded flags. The runner stops with bound_violated before any retry or
+later variant, and does not misclassify the known expenditure as uncertain.
+
+Regression evidence: two new parameterized cases failed before the implementation
+change. The reported reproduction now preserves 100.008 TEST, 100000 input tokens,
+zero uncertain cost and a batch-budget violation. A second case costing 1.508 TEST
+exceeds the per-call reservation while remaining within the batch budget; it also
+stops immediately and reports only the bound violation. Full suite: 37 passed.
+No paid calls or changes outside the evaluation module in this revision. Exact
+resubmission SHA and CI evidence are recorded in the PR body.

@@ -50,10 +50,15 @@ class Ledger:
                                  'uncertain_upper_bound': str(bound)})
             return
         cost = self.price(usage)
-        require(cost <= bound, 'provider exceeded declared bound; stop immediately')
         self.committed += cost - bound
-        self.entries.append({'key': key, 'status': 'known', 'usage': deepcopy(usage),
-                             'cost': str(cost), 'uncertain_upper_bound': '0'})
+        # A disproved reservation cannot bound known expenditure. Reconcile the
+        # actual cost first and return the violation so the runner stops safely.
+        entry = {'key': key, 'status': 'known', 'usage': deepcopy(usage),
+                 'cost': str(cost), 'uncertain_upper_bound': '0',
+                 'reserved_bound': str(bound), 'bound_exceeded': cost > bound,
+                 'budget_exceeded': self.committed > self.limit}
+        self.entries.append(entry)
+        return entry
 
     def report(self, denominators):
         known = sum((money(e.get('cost', 0)) for e in self.entries), Decimal(0))
@@ -64,6 +69,8 @@ class Ledger:
                                   for u in UNITS if self.tariff['categories'][u] == c), Decimal(0)))
                        for c in ('api', 'server', 'manual')}
         return {'tariff': self.tariff, 'known_cost': str(known),
+                'bound_exceeded': any(e.get('bound_exceeded', False) for e in self.entries),
+                'budget_exceeded': self.committed > self.limit,
                 'uncertain_cost_upper_bound': str(uncertain), 'reserved_or_spent': str(self.committed),
                 'limit': str(self.limit), 'usage': totals, 'by_category': by_category,
                 'unit_costs': {unit: {'denominator': n, 'known_cost_per_unit':
